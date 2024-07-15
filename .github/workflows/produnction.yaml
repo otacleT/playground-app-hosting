@@ -13,13 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - name: Clone repository with submodules
-        uses: ./.github/actions/clone_repo
-        with:
-          app-id: ${{ secrets.GH_APP_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          ref: 'main'
+      - uses: actions/checkout@v2
+        name: Checkout repository
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
