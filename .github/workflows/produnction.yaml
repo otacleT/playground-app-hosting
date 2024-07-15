@@ -4,7 +4,7 @@ env:
   GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
   REGION: asia-northeast1
-  REPO_NAME: nextjs-cloud-run
+  REPO_NAME: playground-app-hosting
 
 on:
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
 
       # Setup gcloud CLI/SDK
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+        uses: google-github-actions/setup-gcloud@master
 
       - name: Authorize Docker push
         run: gcloud auth configure-docker
