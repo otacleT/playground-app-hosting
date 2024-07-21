@@ -14,6 +14,9 @@ on:
 
 jobs:
   deploy-production:
+    strategy:
+      matrix:
+        service: [product-x]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -23,7 +26,7 @@ jobs:
 
       - name: Create docker image url
         id: image-url
-        run: echo "::set-output name=value::gcr.io/${{ secrets.DEV_GCP_PROJECT_ID }}/${{ matrix.service }}-service:${{ github.sha }}"
+        run: echo "::set-output name=value::gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ matrix.service }}-service:${{ github.sha }}"
 
       - name: Authenticate to Google Cloud
         id: auth
