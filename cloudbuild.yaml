@@ -1,0 +1,30 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t',
+        'gcr.io/playground-gcp-427008/deploy-test',
+        '.',
+        '-f',
+        Dockerfile,
+      ]
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/playground-gcp-427008/deploy-test']
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      [
+        'run',
+        'deploy',
+        'playground-app-hosting',
+        '--image',
+        'gcr.io/playground-gcp-427008/deploy-test',
+        '--region',
+        'asia-northeast1',
+      ]
+images:
+  - gcr.io/playground-gcp-427008/deploy-test
