@@ -41,5 +41,5 @@ jobs:
           gcloud builds submit \
             --revision=${{ github.sha }} \
             --config=cloudbuild.yaml \
-            --region=${{ env.REGION }}
+            --region=${{ env.REGION }} \
             --substitutions=_IMAGE_URL=${{ steps.image-url.outputs.value }}
