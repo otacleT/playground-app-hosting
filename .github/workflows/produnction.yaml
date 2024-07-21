@@ -21,13 +21,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Clone repository with submodules
-        uses: ./.github/actions/clone_repo
-        with:
-          app-id: ${{ secrets.GH_APP_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          ref: 'main'
-
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v2
