@@ -21,6 +21,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Create docker image url
+        id: image-url
+        run: echo "::set-output name=value::gcr.io/${{ secrets.DEV_GCP_PROJECT_ID }}/${{ matrix.service }}-service:${{ github.sha }}"
+
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v2
@@ -38,3 +42,4 @@ jobs:
             --revision=${{ github.sha }} \
             --config=cloudbuild.yaml \
             --region=${{ env.REGION }}
+            --substitutions=_IMAGE_URL=${{ steps.image-url.outputs.value }}
