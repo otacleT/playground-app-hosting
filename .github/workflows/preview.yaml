@@ -8,6 +8,7 @@ env:
   TAG: pr-${{ github.event.pull_request.number }}
 
 on:
+  pull_request:
   issue_comment:
     types:
       - created
