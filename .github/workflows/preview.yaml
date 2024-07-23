@@ -1,0 +1,48 @@
+name: Cloud Run Preview Deployment
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+  REGION: asia-east1
+  REPO_NAME: playground-app-hosting
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-production:
+    strategy:
+      matrix:
+        service: [product-x]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # Composite actionを使用するために必要
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Create docker image url
+        id: image-url
+        run: echo "::set-output name=value::gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}-service:${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}"
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Trigger Cloud Build
+        run: |
+          gcloud builds submit \
+            --revision=${{ github.sha }} \
+            --config=cloudbuild.yaml \
+            --region=${{ env.REGION }} \
+            --substitutions=_IMAGE_URL=${{ steps.image-url.outputs.value }},_TAG=pr-${{ github.event.pull_request.number }}
