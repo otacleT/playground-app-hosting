@@ -7,11 +7,14 @@ env:
   REPO_NAME: playground-app-hosting
 
 on:
-  workflow_dispatch:
+  issue_comment:
+    types:
+      - created
 
 jobs:
-  deploy-production:
+  deploy-preview:
     runs-on: ubuntu-latest
+    if: github.event.issue.pull_request && github.event.comment.body == '!github deploy-preview'
     timeout-minutes: 15
     steps:
       # Composite actionを使用するために必要
