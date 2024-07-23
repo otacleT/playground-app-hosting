@@ -50,4 +50,4 @@ jobs:
             --revision=${{ github.sha }} \
             --config=cloudbuild.yaml \
             --region=${{ env.REGION }} \
-            --substitutions=_IMAGE_URL=${{ steps.image-url.outputs.value }},_TAG=pr-${{ github.event.issue.number }}
+            --substitutions=_IMAGE_URL=${{ steps.image-url.outputs.value }},_DEPLOY_TAG=pr-${{ github.event.issue.number }}
