@@ -5,6 +5,7 @@ env:
   GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
   REGION: asia-east1
   REPO_NAME: playground-app-hosting
+  TAG: pr-${{ github.event.pull_request.number }}
 
 on:
   issue_comment:
@@ -42,4 +43,4 @@ jobs:
             --revision=${{ github.sha }} \
             --config=cloudbuild.yaml \
             --region=${{ env.REGION }} \
-            --substitutions=_IMAGE_URL=${{ steps.image-url.outputs.value }},_TAG=pr-${{ github.event.pull_request.number }}
+            --substitutions=_IMAGE_URL=${{ steps.image-url.outputs.value }},_TAG=${{ env.TAG }}
