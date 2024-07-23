@@ -8,15 +8,9 @@ env:
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   deploy-production:
-    strategy:
-      matrix:
-        service: [product-x]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
