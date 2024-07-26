@@ -17,6 +17,8 @@ steps:
         '$_IMAGE_URL',
         '--region',
         'asia-northeast1',
+        '--tag',
+        '$_DEPLOY_TAG',
       ]
 images:
   - $_IMAGE_URL
