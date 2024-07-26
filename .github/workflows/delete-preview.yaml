@@ -62,7 +62,11 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Visit the :eyes: **Preview** :eyes: for this PR (updated for commit ${{ github.event.pull_request.head.sha }}):
-            ~<${{ steps.preview-url.outputs.value }}>~
-            <sub>(:warning: deleted at ${{ steps.datetime.outputs.value }})</sub>
+            🗑️ **Preview Deployment Removed** 🗑️
+
+            The preview environment has been removed as the pull request has been closed.
+
+            ~🌐 [Preview URL](${{ steps.preview-url.outputs.value }}) 🌐~
+
+            Removed at: `${{ steps.datetime.outputs.value }}`
           edit-mode: replace
