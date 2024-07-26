@@ -36,7 +36,7 @@ jobs:
       - name: Deploy revision with tag
         run: >
           gcloud alpha run services update-traffic ${{ env.REPO_NAME }}
-          --region ${{ secrets.REGION }}
+          --region ${{ env.REGION }}
           --remove-tags pr-${{ github.event.pull_request.number }}
       - name: Find Comment
         uses: peter-evans/find-comment@v1
