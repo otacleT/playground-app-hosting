@@ -7,20 +7,31 @@ env:
   REPO_NAME: playground-app-hosting
 
 on:
-  workflow_dispatch:
+  issue_comment:
+    types:
+      - created
 
 jobs:
-  deploy-production:
+  deploy-preview:
     runs-on: ubuntu-latest
+    if: github.event.issue.pull_request && github.event.comment.body == '!github deploy-preview'
     timeout-minutes: 15
     steps:
       # Composite actionを使用するために必要
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: echo issue number
+        run: |
+          echo ${{ github.event.issue.number }}
+
+      - name: echo event number
+        run: |
+          echo ${{ github.event.number }}
+
       - name: Create docker image url
         id: image-url
-        run: echo "::set-output name=value::gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}-service:${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}"
+        run: echo "::set-output name=value::gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}-service:${{ github.event.issue.number }}-${{ github.sha }}"
 
       - name: Authenticate to Google Cloud
         id: auth
@@ -39,4 +50,32 @@ jobs:
             --revision=${{ github.sha }} \
             --config=cloudbuild.yaml \
             --region=${{ env.REGION }} \
-            --substitutions=_IMAGE_URL=${{ steps.image-url.outputs.value }},_TAG=pr-${{ github.event.pull_request.number }}
+            --substitutions=_IMAGE_URL=${{ steps.image-url.outputs.value }},_DEPLOY_TAG=pr-${{ github.event.issue.number }}
+      - name: Find Comment
+        uses: peter-evans/find-comment@v1
+        id: fc
+        with:
+          issue-number: ${{ github.event.issue.number  }}
+          comment-author: github-actions[bot]
+          body-includes: 'Preview'
+
+      - name: Create Preview URL
+        id: preview-url
+        run: echo "::set-output name=value::https://pr-${{ github.event.issue.number  }}---playground-app-hosting-akqnkjeoyq-an.a.run.app"
+
+      - name: Get datetime for now
+        id: datetime
+        run: echo "::set-output name=value::$(date)"
+        env:
+          TZ: Asia/Tokyo
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.issue.number  }}
+          body: |
+            Visit the :eyes: **Preview** :eyes: for this PR (updated for commit ${{ github.sha }}):
+            <${{ steps.preview-url.outputs.value }}>
+            <sub>(:fire: updated at ${{ steps.datetime.outputs.value }})</sub>
+          edit-mode: replace
