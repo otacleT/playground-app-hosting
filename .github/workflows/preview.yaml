@@ -75,7 +75,15 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.issue.number  }}
           body: |
-            Visit the :eyes: **Preview** :eyes: for this PR (updated for commit ${{ github.sha }}):
-            <${{ steps.preview-url.outputs.value }}>
-            <sub>(:fire: updated at ${{ steps.datetime.outputs.value }})</sub>
+            🚀 **Preview Deployment Ready!** 🚀
+
+            Your changes have been deployed to a preview environment. You can access it using the following link:
+
+            🌐 [Preview URL](${{ steps.preview-url.outputs.value }}) 🌐
+
+            Deployed at: `${{ steps.datetime.outputs.value }}`
+
+            ---
+
+            This preview is automatically updated with each commit and will be removed once the pull request is closed.
           edit-mode: replace
